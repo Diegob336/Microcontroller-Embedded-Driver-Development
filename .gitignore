@@ -1,0 +1,21 @@
+# STM32CubeIDE and Eclipse
+.metadata/
+*.launch
+*.log
+.settings/
+.project
+.cproject
+
+# Build output
+/Debug/
+/Release/
+*.o
+*.elf
+*.bin
+*.map
+*.list
+
+# Backup or temporary
+*.swp
+*.tmp
+
