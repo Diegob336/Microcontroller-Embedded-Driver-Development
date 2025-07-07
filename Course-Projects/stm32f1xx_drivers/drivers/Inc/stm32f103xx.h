@@ -1,10 +1,11 @@
 #ifndef INC_STM32F103XX_H_
 #define INC_STM32F103XX_H_
+
+#include <stdint.h>
+
 /*
  * base addresses of Flash and SRAM memories
  */
-
-#include <stdint.h>
 
 #define FLASH_BASEADDR         0x08000000U
 #define SRAM_BASEADDR          0x20000000U
@@ -138,5 +139,12 @@ typedef struct {
 	volatile uint32_t I2SPR;      // 0x20: I2S Prescaler Register
 } SPI_RegDef;
 
+/*
+ * Generic Macros
+ */
+#define ENABLE		1
+#define DISABLE		0
+#define SET			ENABLE
+#define RESET		DISABLE
 
 #endif /* INC_STM32F103XX_H_ */
