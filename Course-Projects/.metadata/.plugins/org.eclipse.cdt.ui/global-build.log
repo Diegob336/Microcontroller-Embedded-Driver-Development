@@ -1,0 +1,14 @@
+13:57:10 **** Incremental Build of configuration Debug for project stm32f1xx_drivers ****
+make -j7 all 
+arm-none-eabi-gcc "../Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DSTM32F103RBTx -DSTM32 -DSTM32F1 -DNUCLEO_F103RB -c -I../Inc -I"/Users/diego/Projects/Microcontroller-Embedded-Driver-Development/Course-Projects/stm32f1xx_drivers/drivers/Inc" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Src/main.d" -MT"Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Src/main.o"
+arm-none-eabi-gcc -o "stm32f1xx_drivers.elf" @"objects.list"   -mcpu=cortex-m3 -T"/Users/diego/Projects/Microcontroller-Embedded-Driver-Development/Course-Projects/stm32f1xx_drivers/STM32F103RBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32f1xx_drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: stm32f1xx_drivers.elf
+ 
+arm-none-eabi-size  stm32f1xx_drivers.elf 
+arm-none-eabi-objdump -h -S stm32f1xx_drivers.elf  > "stm32f1xx_drivers.list"
+   text	   data	    bss	    dec	    hex	filename
+    564	      0	   1568	   2132	    854	stm32f1xx_drivers.elf
+Finished building: default.size.stdout
+ 
+Finished building: stm32f1xx_drivers.list
+ 
