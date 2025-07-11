@@ -79,7 +79,7 @@
 #define IOB_CLK_EN()       (RCC->APB2ENR |= (1 << 3))
 #define IOC_CLK_EN()       (RCC->APB2ENR |= (1 << 4))
 #define IOD_CLK_EN()       (RCC->APB2ENR |= (1 << 5))
-#define AFIO_CLK_EN()          (RCC->APB2ENR |= (1 << 0))
+#define AFIO_CLK_EN()      (RCC->APB2ENR |= (1 << 0))
 
 /* GPIOx peripheral clock disable macros */
 #define IOA_CLK_DI()           (RCC->APB2ENR &= ~(1 << 2))
@@ -87,6 +87,7 @@
 #define IOC_CLK_DI()           (RCC->APB2ENR &= ~(1 << 4))
 #define IOD_CLK_DI()           (RCC->APB2ENR &= ~(1 << 5))
 #define AFIO_CLK_DI()          (RCC->APB2ENR &= ~(1 << 0))
+
 
 
 
@@ -114,6 +115,14 @@ typedef struct {
 	volatile uint32_t BRR;
 	volatile uint32_t LCKR;
 } GPIO_RegDef_t;
+
+typedef struct {
+    volatile uint32_t EVCR;       // 0x00: Event Control Register
+    volatile uint32_t MAPR;       // 0x04: AF Remap and Debug I/O Configuration Register
+    volatile uint32_t EXTICR[4];  // 0x08 - 0x14: External Interrupt Configuration Registers (EXTICR1 to EXTICR4)
+    volatile uint32_t MAPR2;      // 0x18: AF Remap and Debug I/O Configuration Register 2 (only on some STM32F1 variants)
+} AFIO_RegDef_t;
+
 
 typedef struct {
 	volatile uint32_t CR1;
