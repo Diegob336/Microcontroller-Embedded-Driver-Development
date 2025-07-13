@@ -1,8 +1,9 @@
-#include "stm32f103xx_gpio_driver.h"
-#include "stm32f103xx.h"
+#include "../../drivers/Inc/stm32f103xx_gpio_driver.h"
+
+#include "../../drivers/Inc/stm32f103xx.h"
 
 
-void GPIO_clk_control(GPIO_RefDef_t *pGPIOx, uint8_t EnorDi)
+void GPIO_clk_control(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 {
 	if(EnorDi == ENABLE){
 		if (pGPIOx == AFIO){
@@ -62,7 +63,7 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 		pGPIOHandle->pGPIOx->CRH |= temp;
 	}
 }
-void GPIO_DeInit(GPIO_RefDef_t *pGPIOx)
+void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
 {
 	if (pGPIOx == AFIO){
 		RCC->APB2RSTR |= (1 << 0);
@@ -90,20 +91,20 @@ void GPIO_DeInit(GPIO_RefDef_t *pGPIOx)
 /*
  * Read and write
  */
-uint8_t GPIO_ReadFromInputPin(GPIO_RefDef_t *pGPIOx, uint8_t PinNumber)
+uint8_t GPIO_ReadFromInputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 {
 	uint8_t value;
 	value = (uint8_t)(pGPIOx->IDR >> PinNumber) & 1;
 	return value;
 
 }
-uint16_t GPIO_ReadFromInputPort(GPIO_RegDef *pGPIOx)
+uint16_t GPIO_ReadFromInputPort(GPIO_RegDef_t *pGPIOx)
 {
 	uint16_t value;
 	value = (uint16_t)pGPIOx->IDR;
 	return value;
 }
-void GPIO_WriteToOutputPin(GPIO_RefDef_t *pGPIOx, uint8_t PinNumber, uint8_t value)
+void GPIO_WriteToOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t value)
 {
 	if(value == 1){
 		pGPIOx->ODR |= (1 << PinNumber);
@@ -112,11 +113,11 @@ void GPIO_WriteToOutputPin(GPIO_RefDef_t *pGPIOx, uint8_t PinNumber, uint8_t val
 		pGPIOx->ODR &= ~(1 << PinNumber);
 	}
 }
-void GPIO_WriteToOutputPort(GPIO_RegDef *pGPIOx, uint8_t value)
+void GPIO_WriteToOutputPort(GPIO_RegDef_t *pGPIOx, uint8_t value)
 {
 	pGPIOx->ODR = value;
 }
-void GPIO_ToggleOutputPin(GPIO_RefDef_t *pGPIOx, uint8_t PinNumber)
+void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 {
 	pGPIOx->ODR ^= (1 << PinNumber);
 }
