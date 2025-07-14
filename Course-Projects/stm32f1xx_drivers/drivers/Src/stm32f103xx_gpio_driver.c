@@ -2,6 +2,8 @@
 
 #include "../../drivers/Inc/stm32f103xx.h"
 
+uint8_t GPIO_BASEADDR_TO_CODE(GPIO_RegDef_t *pGPIOx);
+
 
 void GPIO_clk_control(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 {
@@ -48,19 +50,52 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 {
 	uint32_t temp = 0;
 	uint8_t pin = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber;
+	if(pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF <= 0x0C) {
 	// configure the mode/speed of the pin
-	if (pin < 8) {
-		temp = pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF | pGPIOHandle->GPIO_PinConfig.GPIO_Mode_Speed;
-		temp = temp << (4 * pin);
-		pGPIOHandle->pGPIOx->CRL &= ~(0xF << (4 * pin));
-		pGPIOHandle->pGPIOx->CRL |= temp;
+		if (pin < 8) {
+			temp = pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF | pGPIOHandle->GPIO_PinConfig.GPIO_Mode_Speed;
+			temp = temp << (4 * pin);
+			pGPIOHandle->pGPIOx->CRL &= ~(0xF << (4 * pin));
+			pGPIOHandle->pGPIOx->CRL |= temp;
 
+		}
+		else if (pin >= 8) {
+			temp = pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF | pGPIOHandle->GPIO_PinConfig.GPIO_Mode_Speed;
+			temp = temp << (4 * (pin % 8));
+			pGPIOHandle->pGPIOx->CRH &= ~(0xF << (4 * (pin % 8)));
+			pGPIOHandle->pGPIOx->CRH |= temp;
+		}
 	}
-	else if (pin >= 8) {
-		temp = pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF | pGPIOHandle->GPIO_PinConfig.GPIO_Mode_Speed;
-		temp = temp << (4 * (pin % 8));
-		pGPIOHandle->pGPIOx->CRH &= ~(0xF << (4 * (pin % 8)));
-		pGPIOHandle->pGPIOx->CRH |= temp;
+	// interrupt mode
+	else {
+		if(pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF == 0x0D){
+			// configure the FTSR
+			EXTI->FTSR |= (1 << pin);
+			// clear the bit corresponding to RSTR
+			EXTI->RTSR &= ~(1 << pin);
+		}
+		else if (pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF == 0x0E){
+			// configure the RTSR
+			EXTI->RTSR |= (1 << pin);
+			// clear the bit corresponding to FSTR
+			EXTI->FTSR &= ~(1 << pin);
+		}
+		else if (pGPIOHandle->GPIO_PinConfig.GPIO_Mode_CNF == 0x0E){
+			// configure the FTSR
+			EXTI->FTSR |= (1 << pin);
+			// clear the bit
+			EXTI->RTSR |= (1 << pin);
+		}
+
+		AFIO_CLK_EN();
+		uint8_t portCode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+
+		//enable the exti interrupt delivery using IMR
+		EXTI->IMR |= (1 << pin);
+
+		//configure the GPIO port selection in SYSCFG_EXTICR
+		AFIO->EXTICR[pin / 4] = (portCode << ((pin % 4) * 4));
+
 	}
 }
 void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
@@ -127,9 +162,52 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
  */
 void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
 {
-
+	if (EnorDi == 1){
+		if (IRQNumber <= 31){
+			//program ISER0 register
+			*NVIC_ISER0 |= (1 << IRQNumber);
+		}
+		else if (IRQNumber > 31 && IRQNumber < 64){
+			//program ISER1 register
+			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
+		}
+		else if (IRQNumber >= 64 && IRQNumber < 96){
+			//program ISER2 register
+			*NVIC_ISER2 |= (1 << (IRQNumber % 32));
+		}
+	}
+	else {
+		if (IRQNumber <= 31){
+			//program ICER0 register
+			*NVIC_ICER0 |= (1 << IRQNumber);
+		}
+		else if (IRQNumber > 31 && IRQNumber < 64){
+			//program ICER1 register
+			*NVIC_ICER1 |= (1 << (IRQNumber % 32));
+		}
+		else if (IRQNumber >= 64 && IRQNumber < 96){
+			//program ICER2 register
+			*NVIC_ICER2 |= (1 << (IRQNumber % 32));
+		}
+	}
 }
 void GPIO_IRQHandling(uint8_t PinNumber)
 {
 
+}
+
+uint8_t GPIO_BASEADDR_TO_CODE(GPIO_RegDef_t *pGPIOx){
+	if(pGPIOx == GPIOA){
+		return 0;
+	}
+	else if (pGPIOx == GPIOB){
+		return 1;
+	}
+	else if (pGPIOx == GPIOC){
+		return 2;
+	}
+	else if (pGPIOx == GPIOD){
+		return 3;
+	}
+	return -1;
 }

@@ -40,6 +40,10 @@ typedef struct {
 #define GPIO_MODE_AF_PP            0x08  // CNF=10
 #define GPIO_MODE_AF_OD            0x0C  // CNF=11
 
+#define GPIO_MODE_IT_FT            0x0D  // Falling edge trigger
+#define GPIO_MODE_IT_RT            0x0E  // Rising edge trigger
+#define GPIO_MODE_IT_RFT           0x0F  // Rising + Falling edge
+
 #define GPIO_SPEED_2MHZ            0x02
 #define GPIO_SPEED_10MHZ           0x01
 #define GPIO_SPEED_50MHZ           0x03

@@ -4,6 +4,22 @@
 #include <stdint.h>
 
 /*
+ * ARM Cortex Mx Processor NVIC ISERx register Addresses
+ */
+
+#define NVIC_ISER0             ((volatile uint32_t*)0xE000E100)
+#define NVIC_ISER1             ((volatile uint32_t*)0xE000E104)
+#define NVIC_ISER2             ((volatile uint32_t*)0xE000E108)
+
+/*
+ * ARM Cortex Mx Processor NVIC ICERx register Addresses
+ */
+
+#define NVIC_ICER0             ((volatile uint32_t*)0XE000E180)
+#define NVIC_ICER1             ((volatile uint32_t*)0XE000E184)
+#define NVIC_ICER2             ((volatile uint32_t*)0XE000E188)
+
+/*
  * base addresses of Flash and SRAM memories
  */
 
@@ -51,7 +67,7 @@
 #define SPI1_BASE              (APB2PERIPH_BASE + 0x3000)
 #define USART1_BASE            (APB2PERIPH_BASE + 0x3800)
 #define EXTI_BASE              (APB2PERIPH_BASE + 0x0400)
-#define AFIO_BASE                  (APB2PERIPH_BASE + 0x0000)
+#define AFIO_BASE              (APB2PERIPH_BASE + 0x0000)
 
 /*
  * Peripherals on the AHB bus, base addresses
@@ -68,8 +84,9 @@
 #define RCC                    ((RCC_RegDef *)RCC_BASE)
 #define AFIO                   ((AFIO_RegDef_t *)AFIO_BASE)
 #define I2C1                   ((I2C_RegDef_t *)I2C1_BASE)
-#define SPI1                   ((SPI_RegDef *)SPI1_BASE)
-#define SPI2                   ((SPI_RegDef *)SPI2_BASE)
+#define SPI1                   ((SPI_RegDef_t *)SPI1_BASE)
+#define SPI2                   ((SPI_RegDef_t *)SPI2_BASE)
+#define EXTI                   ((EXTI_RegDef_t *)EXTI_BASE)
 
 /*
  * GPIOx peripheral clock enable
@@ -88,6 +105,17 @@
 #define IOD_CLK_DI()           (RCC->APB2ENR &= ~(1 << 5))
 #define AFIO_CLK_DI()          (RCC->APB2ENR &= ~(1 << 0))
 
+/*
+ * IRQ numbers for connectivity lines
+ */
+
+#define IRQ_NUM_EXTI0          6
+#define IRQ_NUM_EXTI1          7
+#define IRQ_NUM_EXTI2          8
+#define IRQ_NUM_EXTI3          9
+#define IRQ_NUM_EXTI4          10
+#define IRQ_NUM_EXTI9_5        23
+#define IRQ_NUM_EXTI15_10      40
 
 
 
@@ -122,6 +150,17 @@ typedef struct {
     volatile uint32_t EXTICR[4];  // 0x08 - 0x14: External Interrupt Configuration Registers (EXTICR1 to EXTICR4)
     volatile uint32_t MAPR2;      // 0x18: AF Remap and Debug I/O Configuration Register 2 (only on some STM32F1 variants)
 } AFIO_RegDef_t;
+
+typedef struct
+{
+    volatile uint32_t IMR;    // Interrupt Mask Register         (offset: 0x00)
+    volatile uint32_t EMR;    // Event Mask Register             (offset: 0x04)
+    volatile uint32_t RTSR;   // Rising Trigger Selection Reg.   (offset: 0x08)
+    volatile uint32_t FTSR;   // Falling Trigger Selection Reg.  (offset: 0x0C)
+    volatile uint32_t SWIER;  // Software Interrupt Event Reg.   (offset: 0x10)
+    volatile uint32_t PR;     // Pending Register                (offset: 0x14)
+} EXTI_RegDef_t;
+
 
 
 typedef struct {
