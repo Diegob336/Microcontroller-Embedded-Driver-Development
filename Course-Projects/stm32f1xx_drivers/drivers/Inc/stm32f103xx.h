@@ -20,6 +20,14 @@
 #define NVIC_ICER2             ((volatile uint32_t*)0XE000E188)
 
 /*
+ * ARM Cortex Mx Processor NVIC Priority register adress
+ */
+#define NVIC_PR_BASEADDR       ((volatile uint32_t*)0xE000E400)
+
+
+#define NO_PR_BITS_IMPLEMENTED                 4
+
+/*
  * base addresses of Flash and SRAM memories
  */
 

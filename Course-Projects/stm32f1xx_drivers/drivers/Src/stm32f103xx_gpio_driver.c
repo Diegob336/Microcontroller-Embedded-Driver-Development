@@ -160,7 +160,7 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
 /*
  * IRQ Configuration and ISR handling
  */
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
+void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
 	if (EnorDi == 1){
 		if (IRQNumber <= 31){
@@ -191,9 +191,22 @@ void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
 		}
 	}
 }
+
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t priority)
+{
+	volatile uint32_t *PR_Register = NVIC_PR_BASEADDR;
+	uint8_t ipr_index = IRQNumber / 4;
+	uint8_t section_offset = (IRQNumber % 4) * 8;
+	*(PR_Register+ (ipr_index)) &= ~(0xFF << section_offset);
+	*(PR_Register+ (ipr_index)) |= (priority << (section_offset + (8 - NO_PR_BITS_IMPLEMENTED)));
+}
+
 void GPIO_IRQHandling(uint8_t PinNumber)
 {
-
+	//clear the exti pr register corresponding to the pin number
+	if(EXTI->PR & (1 << PinNumber)) {
+		EXTI->PR |= (1 <<PinNumber);
+	}
 }
 
 uint8_t GPIO_BASEADDR_TO_CODE(GPIO_RegDef_t *pGPIOx){
