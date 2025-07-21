@@ -94,6 +94,7 @@
 #define I2C1                   ((I2C_RegDef_t *)I2C1_BASE)
 #define SPI1                   ((SPI_RegDef_t *)SPI1_BASE)
 #define SPI2                   ((SPI_RegDef_t *)SPI2_BASE)
+#define SPI3                   ((SPI_RegDef_t *)SPI3_BASE)
 #define EXTI                   ((EXTI_RegDef_t *)EXTI_BASE)
 
 /*
@@ -112,6 +113,14 @@
 #define IOC_CLK_DI()           (RCC->APB2ENR &= ~(1 << 4))
 #define IOD_CLK_DI()           (RCC->APB2ENR &= ~(1 << 5))
 #define AFIO_CLK_DI()          (RCC->APB2ENR &= ~(1 << 0))
+
+/*
+ * SPIx peripheral clock enable
+ */
+
+#define SPI1_CLC_EN()          (RCC->APB2ENR |= (1 << 12))
+#define SPI2_CLC_EN()          (RCC->APB1ENR |= (1 << 14))
+#define SPI3_CLC_EN()          (RCC->APB1ENR |= (1 << 15))
 
 /*
  * IRQ numbers for connectivity lines
@@ -193,7 +202,7 @@ typedef struct {
 	volatile uint32_t TXCRCR;     // 0x18: TX CRC Register
 	volatile uint32_t I2SCFGR;    // 0x1C: I2S Configuration Register
 	volatile uint32_t I2SPR;      // 0x20: I2S Prescaler Register
-} SPI_RegDef;
+} SPI_RegDef_t;
 
 /*
  * Generic Macros
