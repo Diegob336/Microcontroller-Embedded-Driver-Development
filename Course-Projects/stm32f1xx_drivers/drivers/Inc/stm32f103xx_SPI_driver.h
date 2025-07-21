@@ -21,26 +21,38 @@ typedef struct {
 }SPI_Config_t;
 
 typedef struct{
-	SPI_RegDef *pSPIx;
+	SPI_RegDef_t *pSPIx;
 	SPI_Config_t SPI_Config;
 }SPI_Handle_t;
-#endif /* INC_STM32F103XX_SPI_DRIVER_H_ */
 
-/*
- * Peripheral Clock setup
- */
 void SPI_clk_control(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
 
 /*
  * Init and De-init
  */
 
-void SPI_Init(SPI_RegDef_t *pSPIHandle);
+void SPI_Init(SPI_Handle_t *pSPIHandle);
+
 void SPI_DeInit(SPI_RegDef_t *pSPIx);
 
 /*
  * Data send and receive
  */
 
-void SPI_SendData(SPI_RegDef_t *pSPIHandle);
-void SPI_ReceiveData(SPI_RegDef_t *pSPIHandle);
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len);
+
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer);
+
+/*
+ * IRQ Configuration and ISR handling
+ */
+void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
+void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t priority);
+void SPi_IRQHandling(SPI_Handle_t *pSPIHandle);
+
+#endif /* INC_STM32F103XX_SPI_DRIVER_H_ */
+
+/*
+ * Peripheral Clock setup
+ */
+

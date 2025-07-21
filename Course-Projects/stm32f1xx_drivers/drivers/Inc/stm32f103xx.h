@@ -118,9 +118,9 @@
  * SPIx peripheral clock enable
  */
 
-#define SPI1_CLC_EN()          (RCC->APB2ENR |= (1 << 12))
-#define SPI2_CLC_EN()          (RCC->APB1ENR |= (1 << 14))
-#define SPI3_CLC_EN()          (RCC->APB1ENR |= (1 << 15))
+#define SPI1_CLk_EN()          (RCC->APB2ENR |= (1 << 12))
+#define SPI2_CLk_EN()          (RCC->APB1ENR |= (1 << 14))
+#define SPI3_CLk_EN()          (RCC->APB1ENR |= (1 << 15))
 
 /*
  * IRQ numbers for connectivity lines
@@ -211,5 +211,8 @@ typedef struct {
 #define DISABLE		0
 #define SET			ENABLE
 #define RESET		DISABLE
+
+#include "stm32f103xx_SPI_driver.h"
+#include "stm32f103xx_gpio_driver.h"
 
 #endif /* INC_STM32F103XX_H_ */
