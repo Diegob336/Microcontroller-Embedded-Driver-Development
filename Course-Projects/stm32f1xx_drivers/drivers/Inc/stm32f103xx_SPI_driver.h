@@ -25,6 +25,77 @@ typedef struct{
 	SPI_Config_t SPI_Config;
 }SPI_Handle_t;
 
+/*
+ * @SPI_DeviceMode
+ */
+#define SPI_DEVICE_MODE_MASTER        1
+#define SPI_DEVICE_MODE_SLAVE         0
+
+/*
+ * @SPI_BusConfig
+ */
+#define SPI_BUS_CONFIG_FD             1
+#define SPI_BUS_CONFIG_HD             2
+#define SPI_BUS_CONFIG_SIMPLEX_RX     3
+
+/*
+ * @SPI_SclkSpeed
+ */
+
+#define SPI_SCLK_SPEED_DIV2           0
+#define SPI_SCLK_SPEED_DIV4           1
+#define SPI_SCLK_SPEED_DIV8           2
+#define SPI_SCLK_SPEED_DIV16          3
+#define SPI_SCLK_SPEED_DIV32          4
+#define SPI_SCLK_SPEED_DIV64          5
+#define SPI_SCLK_SPEED_DIV128         6
+#define SPI_SCLK_SPEED_DIV256         7
+
+/*
+ * @SPI_DFF
+ */
+#define SPI_DFF_8BITS                 0
+#define SPI_DFF_16bits                1
+
+/*
+ * @SPI_CPOL
+ */
+
+#define SPI_CPOL_LOW                  0
+#define SPI_CPOL_HIGH                 1
+
+/*
+ * @SPI_CPHA
+ */
+
+#define SPI_CPHA_LOW                  0
+#define SPI_CPHA_HIGH                 1
+
+/*
+ * @SPI_SSM
+ */
+
+#define SPI_SSM_DI                    0
+#define SPI_SSM_EN                    1
+
+/*
+ * Macros for Status register flags
+ */
+
+// SPI_SR bit positions as masks
+#define SPI_SR_RXNE     (1 << 0)   // Receive buffer not empty
+#define SPI_SR_TXE      (1 << 1)   // Transmit buffer empty
+#define SPI_SR_CHSIDE   (1 << 2)   // Channel side (only meaningful in full duplex)
+#define SPI_SR_UDR      (1 << 3)   // Underrun flag
+#define SPI_SR_CRCERR   (1 << 4)   // CRC error flag
+#define SPI_SR_MODF     (1 << 5)   // Mode fault
+#define SPI_SR_OVR      (1 << 6)   // Overrun flag
+#define SPI_SR_BSY      (1 << 7)   // Busy flag
+
+/*
+ * SPI peripheral clock control
+ */
+
 void SPI_clk_control(SPI_RegDef_t *pSPIx, uint8_t EnorDi);
 
 /*
