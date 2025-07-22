@@ -77,31 +77,31 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx){
 
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len){
 
-	uint32_t i = 0;
 	while(len > 0){
+		//wait until tx buffer is empty
+		while(!(pSPIx->SR & SPI_SR_TXE));
 
-		while(!(pSPIx->SR & SPI_SR_TXE)){
-			uint8_t txFlag = (pSPIx->SR >> 1);
-			// block until tx buffer is empty
-			if (pSPIx->SR & (1 << 1)){
-					break;
-			}
-		}
-		uint8_t dff = (pSPIx->CR1 >> 11);
+		uint8_t dff = (pSPIx->CR1 >> SPI_CR1_DFF);
 		if ((dff & 1) == SPI_DFF_16bits) {
-			pSPIx->DR &= ~(0xFFFF);
-			pSPIx->DR |= *(pTxBuffer + i);
-			i++;
-			pSPIx->DR |= (*(pTxBuffer + i) << 8);
-			i++;
-			len--;
-			len--;
+			if (len >= 2){
+				pSPIx->DR = *((uint16_t *)pTxBuffer);
+				len -= 2;
+				pTxBuffer += 2;
+
+			}
+			else {
+				pSPIx->DR = *(pTxBuffer);
+				len--;
+				pTxBuffer++;
+			}
+
 		}
 		else {
-			pSPIx->DR = *(pTxBuffer + i);
-			i++;
+			pSPIx->DR = *(pTxBuffer);
 			len--;
-		}
+			pTxBuffer++;
+			}
+
 
 	}
 }
