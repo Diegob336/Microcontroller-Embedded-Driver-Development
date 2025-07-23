@@ -106,8 +106,21 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len){
 	}
 }
 
-void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer){
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t len){
+	while (len > 0){
+		while (!(pSPIx->SR & SPI_SR_RXNE));
 
+		if (pSPIx->CR1 & ( 1 << SPI_CR1_DFF)){
+			*((uint16_t *)pRxBuffer) = pSPIx->DR;
+			pRxBuffer += 2;
+			len -= 2;
+		}
+		else {
+			*pRxBuffer = pSPIx->DR;
+			pRxBuffer++;
+			len--;
+		}
+	}
 }
 
 /*
@@ -123,6 +136,12 @@ void SPi_IRQHandling(SPI_Handle_t *pSPIHandle){
 
 }
 
-uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t Flag){
-
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDI){
+	if (EnorDI == ENABLE){
+		pSPIx->CR1 |= (1 << 6);
+	}
+	else {
+		pSPIx->CR1 &= ~(1 << 6);
+	}
 }
+

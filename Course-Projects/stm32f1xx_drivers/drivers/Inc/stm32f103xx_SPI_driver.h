@@ -136,14 +136,17 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx);
 
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len);
 
-void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer);
+void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t len);
 
 /*
  * IRQ Configuration and ISR handling
  */
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t priority);
-void SPi_IRQHandling(SPI_Handle_t *pSPIHandle);
+void SPI_IRQHandling(SPI_Handle_t *pSPIHandle);
+
+//other APIs
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDI);
 
 #endif /* INC_STM32F103XX_SPI_DRIVER_H_ */
 
