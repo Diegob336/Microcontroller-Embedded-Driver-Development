@@ -10,6 +10,9 @@
 void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle);
 void spi_rxne_interrupt_handle(SPI_Handle_t *pSPIHandle);
 void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle);
+void SPI_CloseReception(SPI_Handle_t *pSPIHandle);
+void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle);
+
 
 /*
  * Peripheral Clock setup
@@ -222,6 +225,8 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber, uint8_t priority){
 	*(PR_Register+ (ipr_index)) &= ~(0xFF << section_offset);
 	*(PR_Register+ (ipr_index)) |= (priority << (section_offset + (8 - NO_PR_BITS_IMPLEMENTED)));
 }
+
+
 void SPI_IRQHandling(SPI_Handle_t *pSPIHandle){
 	uint8_t status1, status2;
 
@@ -293,10 +298,7 @@ void spi_txe_interrupt_handle(SPI_Handle_t *pSPIHandle){
 		// close the spi transmission
 		// turn off the tx interrupt
 
-		pSPIHandle->pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
-		pSPIHandle->pTxBuffer = NULL;
-		pSPIHandle->TxLen = 0;
-		pSPIHandle->TxState = SPI_READY;
+		SPI_CloseTransmission(pSPIHandle);
 
 		SPI_ApplicationEventCallBack(pSPIHandle, SPI_EVENT_TX_CMPLT);
 
@@ -318,16 +320,51 @@ void spi_rxne_interrupt_handle(SPI_Handle_t *pSPIHandle){
 	}
 
 	if (pSPIHandle->RxLen <= 0){
-		pSPIHandle->pSPIx->CR2 &= ~(1 << SPI_CR2_RXNEIE);
-		pSPIHandle->pRxBuffer = NULL;
-		pSPIHandle->RxLen = 0;
-		pSPIHandle->RxState = SPI_READY;
+
+		SPI_CloseReception(pSPIHandle);
 
 		SPI_ApplicationEventCallBack(pSPIHandle, SPI_EVENT_RX_CMPLT);
 	}
 
 }
 
-void spi_ovr_err_interrupt_handle(SPI_Handle_t *SPIHandle){
+void spi_ovr_err_interrupt_handle(SPI_Handle_t *pSPIHandle){
+	uint8_t temp;
+
+	if (pSPIHandle->TxState != SPI_BUSY_IN_TX){
+		temp = pSPIHandle->pSPIx->DR;
+		temp = pSPIHandle->pSPIx->SR;
+	}
+	(void)temp;
+	SPI_ApplicationEventCallBack(pSPIHandle, SPI_EVENT_OVR_ERR);
+}
+
+void SPI_CloseTransmission(SPI_Handle_t *pSPIHandle){
+
+	pSPIHandle->pSPIx->CR2 &= ~(1 << SPI_CR2_TXEIE);
+	pSPIHandle->pTxBuffer = NULL;
+	pSPIHandle->TxLen = 0;
+	pSPIHandle->TxState = SPI_READY;
+
+}
+void SPI_CloseReception(SPI_Handle_t *pSPIHandle){
+
+	pSPIHandle->pSPIx->CR2 &= ~(1 << SPI_CR2_RXNEIE);
+	pSPIHandle->pRxBuffer = NULL;
+	pSPIHandle->RxLen = 0;
+	pSPIHandle->RxState = SPI_READY;
+}
+
+void SPI_CLearOVRFLag(SPI_RegDef_t *pSPIx){
+
+	uint8_t temp;
+	temp = pSPIx->DR;
+	temp = pSPIx->SR;
+	(void)temp;
+
+}
+
+__attribute__((weak)) void SPI_ApplicationEventCallBack(SPI_Handle_t *pSPIHadnle, uint8_t AppEvent){
+	//this is a weak implementation. Apllication may override it
 
 }

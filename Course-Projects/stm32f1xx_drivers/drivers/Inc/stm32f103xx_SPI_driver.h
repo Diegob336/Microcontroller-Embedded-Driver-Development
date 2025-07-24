@@ -175,6 +175,14 @@ void SPI_IRQHandling(SPI_Handle_t *pSPIHandle);
 
 //other APIs
 void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnorDI);
+void SPI_CLearOVRFLag(SPI_RegDef_t *pSPIx);
+void SPI_CloseTransmission(SPI_Handle_t *pSPIHadnle);
+void SPI_CloseReception(SPI_Handle_t *pSPIHadnle);
+
+// Applicaition callback
+
+void SPI_ApplicationEventCallBack(SPI_Handle_t *pSPIHadnle, uint8_t AppEvent);
+
 
 #endif /* INC_STM32F103XX_SPI_DRIVER_H_ */
 
