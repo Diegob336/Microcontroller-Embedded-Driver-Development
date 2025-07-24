@@ -23,7 +23,31 @@ typedef struct {
 typedef struct{
 	SPI_RegDef_t *pSPIx;
 	SPI_Config_t SPI_Config;
+	uint8_t      *pTxBuffer;
+	uint8_t      *pRxBuffer;
+	uint32_t     TxLen;
+	uint32_t     RxLen;
+	uint8_t      TxState;
+	uint8_t      RxState;
+
 }SPI_Handle_t;
+
+/*
+ * SPI applicaiton states
+ */
+
+#define SPI_READY                     0
+#define SPI_BUSY_IN_RX                1
+#define SPI_BUSY_IN_TX                2
+
+/*
+ * SPI Application events
+ */
+
+#define SPI_EVENT_TX_CMPLT            1
+#define SPI_EVENT_RX_CMPLT            2
+#define SPI_EVENT_OVR_ERR             3
+
 
 /*
  * @SPI_DeviceMode
@@ -137,6 +161,10 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx);
 void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTxBuffer, uint32_t len);
 
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRxBuffer, uint32_t len);
+
+uint8_t SPI_SendDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pTxBuffer, uint32_t len);
+
+uint8_t SPI_ReceiveDataIT(SPI_Handle_t *pSPIHandle, uint8_t *pRxBuffer, uint32_t len);
 
 /*
  * IRQ Configuration and ISR handling

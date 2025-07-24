@@ -2,7 +2,7 @@
 #define INC_STM32F103XX_H_
 
 #include <stdint.h>
-
+#include <stddef.h>
 /*
  * ARM Cortex Mx Processor NVIC ISERx register Addresses
  */
@@ -133,6 +133,11 @@
 #define IRQ_NUM_EXTI4          10
 #define IRQ_NUM_EXTI9_5        23
 #define IRQ_NUM_EXTI15_10      40
+
+#define IRQ_NUM_SPI1           35
+#define IRQ_NUM_SPI2           36
+#define IRQ_NUM_SPI3           51
+
 
 
 
